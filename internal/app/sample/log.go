@@ -43,7 +43,7 @@ func readLogBytes(c *gin.Context) ([]byte, error) {
 	}
 
 	updateValueByHeader(c, "User-Agent", &sl.UserAgent)
-	// IP can be nil according to deployment environment
+	// IP can be nil according to where a server is running
 	updateValueByHeader(c, "X-Forwarded-For", &sl.IP)
 
 	currTime := time.Now().UnixNano() / 1e6
@@ -78,8 +78,8 @@ func SendToKinesis(c *gin.Context) {
 		return
 	}
 
-    err = kinesis.PutRecord(kinesisStream, slBytes)
-    if err != nil {
+	err = kinesis.PutRecord(kinesisStream, slBytes)
+	if err != nil {
 		errStr := fmt.Sprintf("Failed to put record to Kinesis: %s", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"message": errStr})
 		return
